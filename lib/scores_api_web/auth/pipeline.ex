@@ -1,6 +1,6 @@
 defmodule ScoresApiWeb.Auth.Pipeline do
   use Guardian.Plug.Pipeline, otp_app: :ScoresApiWeb,
-  module: ScoresApiWeb.Guardian,
+  module: ScoresApiWeb.Auth.Guardian,
   error_handler: ScoresApiWeb.Auth.ErrorHandler
 
   plug Guardian.Plug.VerifyHeader, realm: "Bearer"
