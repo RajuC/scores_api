@@ -19,4 +19,19 @@ defmodule ScoresApiWeb.FallbackController do
     |> put_view(ScoresApiWeb.ErrorView)
     |> render(:"404")
   end
+
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> put_view(ScoresApiWeb.ErrorView)
+    |> render(:"404")
+  end
+
+  def call(conn, {:error, :secret_not_found}) do
+    conn
+    |> put_status(:not_found)
+    |> put_view(ScoresApiWeb.ErrorView)
+    |> render(:"404")
+  end
+
 end

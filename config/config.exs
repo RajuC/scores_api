@@ -28,3 +28,9 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+
+
+# Guardian config
+config :scores_api, ScoresApiWeb.Auth.Guardian,
+      issuer: "scores_api",
+      secret_key: "sjxhzlLxh+0RKH7Sk+wgkWBlqABMQpa7qtO5ahO/IcqFzCccQAR5DYq+zNJe40yq"
