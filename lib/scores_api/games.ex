@@ -13,18 +13,30 @@ defmodule ScoresApi.Games do
 
   ## Examples
 
-      iex> list_games()
+      iex> list_games(user_id)
       [%Game{}, ...]
 
   """
-  def list_games do
-    Repo.all(Game)
+  def list_games(user_id) do
+    query = from u in Game, where: u.user_id == ^user_id
+    query
+      |> Repo.all()
   end
+
+
+
+## =======
+
+def list_game_ids(user_id) do
+  query = from u in Game, where: u.user_id == ^user_id, select: u.id
+  query
+    |> Repo.all()
+end
 
 
 ##========
 
-def list_games(userId) do
+def list_games_scores(userId) do
   query = from u in Game, where: u.user_id == ^userId, select: {u.id, u.title, u.inserted_at, u.high_pts_to_win}
   query
     |> Repo.all()
@@ -33,7 +45,7 @@ def list_games(userId) do
                   t_s             = ScoresApi.Utils.cal_total_scores(m_scores)
                   leading_player  = high_pts_to_win |> ScoresApi.Utils.get_leading_player(t_s)
                   %{
-                    id:             game_id,
+                    game_id:             game_id,
                     title:          title,
                     scores:         m_scores,
                     leading_player: leading_player,

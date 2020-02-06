@@ -2,9 +2,13 @@ defmodule ScoresApi.Utils do
 
 
   alias ScoresApi.Scores
-  # alias ScoresApi.Games.Score
+  alias ScoresApi.Games
 
-
+  def check_game_exists_for_user(user_id, game_id) do
+    user_id
+      |> Games.list_game_ids
+      |> Enum.member?(game_id)
+  end
 
   def make_key_for_map(map_val) do
     map_val |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)

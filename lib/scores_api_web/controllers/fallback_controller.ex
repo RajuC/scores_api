@@ -27,6 +27,15 @@ defmodule ScoresApiWeb.FallbackController do
     |> render(:"404")
   end
 
+  def call(conn, {:error, :game_not_available_for_user}) do
+    IO.inspect("game not found for user")
+    conn
+    |> put_status(:not_found)
+    |> put_view(ScoresApiWeb.ErrorView)
+    |> render(:"404")
+  end
+
+
   def call(conn, {:error, :secret_not_found}) do
     conn
     |> put_status(:not_found)

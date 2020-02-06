@@ -11,10 +11,10 @@ defmodule ScoresApiWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
+    %{game_id: game.id,
       title: game.title,
       players: game.players,
-      user_id: game.user_id,
+      # user_id: game.user_id,
       high_pts_to_win: game.high_pts_to_win}
   end
 
@@ -25,7 +25,7 @@ defmodule ScoresApiWeb.GameView do
 
   def render("game_scores.json", %{game: game}) do
     %{
-        game_id:          game.id,
+        game_id:          game.game_id,
         title:            game.title,
         scores:           game.scores,
         leading_player:   game.leading_player,
