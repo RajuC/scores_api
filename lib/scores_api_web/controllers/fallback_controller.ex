@@ -27,20 +27,28 @@ defmodule ScoresApiWeb.FallbackController do
     |> render(:"404")
   end
 
+
+  ## TBD: need to display valid message response
   def call(conn, {:error, :game_not_available_for_user}) do
     IO.inspect("game not found for user")
     conn
     |> put_status(:not_found)
-    |> put_view(ScoresApiWeb.ErrorView)
-    |> render(:"404")
+    |> text("Game Id not found for User")
+  end
+
+
+  def call(conn, {:error, :round_already_exists_for_game}) do
+    IO.inspect("round already exists")
+    conn
+    |> put_status(:not_found)
+    |> text("Round number already exists")
   end
 
 
   def call(conn, {:error, :secret_not_found}) do
     conn
     |> put_status(:not_found)
-    |> put_view(ScoresApiWeb.ErrorView)
-    |> render(:"404")
+    |> text("Secret key not found for guardian")
   end
 
 end

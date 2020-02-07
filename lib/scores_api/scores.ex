@@ -22,6 +22,17 @@ defmodule ScoresApi.Scores do
     Repo.all(Score)
   end
 
+
+
+
+## ================
+
+def list_rounds_by_game_id!(game_id) do
+  query = from u in Score, where: u.game_id == ^game_id, select: u.round
+  Repo.all(query)
+end
+
+
 ## ================
 
 def list_scores_by_game_id!(game_id)do
