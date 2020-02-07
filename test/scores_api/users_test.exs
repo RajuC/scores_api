@@ -6,34 +6,47 @@ defmodule ScoresApi.UsersTest do
   describe "users" do
     alias ScoresApi.Users.User
 
-    @valid_attrs %{email: "some email", name: "some name", password_hash: "some password_hash"}
-    @update_attrs %{email: "some updated email", name: "some updated name", password_hash: "some updated password_hash"}
-    @invalid_attrs %{email: nil, name: nil, password_hash: nil}
+    @valid_attrs  %{
+                    "email"                   => "some.name@somename.com",
+                    "name"                    => "some name",
+                    "password"                => "somePassword",
+                    "password_confirmation"   => "somePassword"
+                  }
+    @update_attrs %{
+                    "email"                   => "some.name1@somename.com",
+                    "name"                    => "some name1",
+                    "password"                => "somePassword12",
+                    "password_confirmation"   => "somePassword12"
+                  }
+    @invalid_attrs %{
+                    "email"                   => nil,
+                    "name"                    => nil,
+                    "password"                => nil,
+                    "password_confirmation"   => nil
+                  }
 
     def user_fixture(attrs \\ %{}) do
       {:ok, user} =
         attrs
         |> Enum.into(@valid_attrs)
         |> Users.create_user()
-
       user
     end
 
     test "list_users/0 returns all users" do
-      user = user_fixture()
+      user = user_fixture() |> Map.put(:password, nil) |> Map.put(:password_confirmation, nil)
       assert Users.list_users() == [user]
     end
 
     test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
+      user = user_fixture() |> Map.put(:password, nil) |> Map.put(:password_confirmation, nil)
       assert Users.get_user!(user.id) == user
     end
 
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
-      assert user.email == "some email"
+      assert user.email == "some.name@somename.com"
       assert user.name == "some name"
-      assert user.password_hash == "some password_hash"
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -43,13 +56,12 @@ defmodule ScoresApi.UsersTest do
     test "update_user/2 with valid data updates the user" do
       user = user_fixture()
       assert {:ok, %User{} = user} = Users.update_user(user, @update_attrs)
-      assert user.email == "some updated email"
-      assert user.name == "some updated name"
-      assert user.password_hash == "some updated password_hash"
+      assert user.email == "some.name1@somename.com"
+      assert user.name == "some name1"
     end
 
     test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
+      user = user_fixture() |> Map.put(:password, nil) |> Map.put(:password_confirmation, nil)
       assert {:error, %Ecto.Changeset{}} = Users.update_user(user, @invalid_attrs)
       assert user == Users.get_user!(user.id)
     end

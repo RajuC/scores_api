@@ -2,6 +2,7 @@ defmodule ScoresApiWeb.GameController do
   use ScoresApiWeb, :controller
 
   alias ScoresApi.Games
+  alias ScoresApi.Utils
   alias ScoresApi.Games.Game
 
   action_fallback ScoresApiWeb.FallbackController
@@ -15,7 +16,7 @@ defmodule ScoresApiWeb.GameController do
 
   def all_games_with_scores(conn, _params) do
     user = Guardian.Plug.current_resource(conn)
-    games = Games.list_games_scores(user.id)
+    games = Utils.list_games_scores(user.id)
     render(conn, "g_s_index.json", games: games)
   end
 

@@ -20,8 +20,8 @@ defmodule ScoresApi.Users.User do
 
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email, :password, :password_confirmation]) # Remove hash, add pw + pw confirmation
-    |> validate_required([:email, :password, :password_confirmation]) # Remove hash, add pw + pw confirmation
+    |> cast(attrs, [:name, :email, :password, :password_confirmation]) # Remove hash, add pw + pw confirmation
+    |> validate_required([:name, :email, :password, :password_confirmation]) # Remove hash, add pw + pw confirmation
     |> validate_format(:email, ~r/@/) # Check that email is valid
     |> validate_length(:password, min: 8) # Check that password length is >= 8
     |> validate_confirmation(:password) # Check that password === password_confirmation

@@ -6,7 +6,7 @@ defmodule ScoresApi.GamesTest do
   describe "games" do
     alias ScoresApi.Games.Game
 
-    @valid_attrs %{high_pts_to_win: true, players: [], title: "some title", user_id: 42}
+    @valid_attrs %{high_pts_to_win: true, players: ["raj", "somu"], title: "some title", user_id: 42}
     @update_attrs %{high_pts_to_win: false, players: [], title: "some updated title", user_id: 43}
     @invalid_attrs %{high_pts_to_win: nil, players: nil, title: nil, user_id: nil}
 
@@ -19,10 +19,18 @@ defmodule ScoresApi.GamesTest do
       game
     end
 
-    test "list_games/0 returns all games" do
+    test "list_games/1 returns all games" do
       game = game_fixture()
-      assert Games.list_games() == [game]
+      assert Games.list_games(42) == [game]
     end
+
+
+    test "list_game_ids/1 returns all game ids of a user" do
+      game1 = game_fixture()
+      game2 = game_fixture()
+      assert Games.list_game_ids(42) == [game1.id, game2.id]
+    end
+
 
     test "get_game!/1 returns the game with given id" do
       game = game_fixture()
@@ -32,7 +40,7 @@ defmodule ScoresApi.GamesTest do
     test "create_game/1 with valid data creates a game" do
       assert {:ok, %Game{} = game} = Games.create_game(@valid_attrs)
       assert game.high_pts_to_win == true
-      assert game.players == []
+      assert game.players == ["raj", "somu"]
       assert game.title == "some title"
       assert game.user_id == 42
     end

@@ -3,8 +3,36 @@ defmodule ScoresApi.Utils do
 
   alias ScoresApi.Scores
   alias ScoresApi.Games
+  alias ScoresApi.Repo
+  alias ScoresApi.Games.Game
+  import Ecto.Query, warn: false
 
 
+
+
+  def list_games_scores(user_id) do
+    query = from u in Game, where: u.user_id == ^user_id, select: {u.id, u.title, u.inserted_at, u.high_pts_to_win}
+    query
+      |> Repo.all()
+      |> Enum.map(fn({game_id, title, timestamp, high_pts_to_win}) ->
+                    m_scores        = game_id         |> ScoresApi.Scores.list_scores_by_game_id!()
+                    t_s             = m_scores        |> ScoresApi.Utils.cal_total_scores()
+                    leading_player  = high_pts_to_win |> ScoresApi.Utils.get_leading_player(t_s)
+                    player_wins     = m_scores        |> ScoresApi.Utils.cal_player_wins()
+                    total_rounds    = m_scores        |> ScoresApi.Utils.get_total_rounds()
+                    %{
+                      game_id:        game_id,
+                      title:          title,
+                      scores:         m_scores,
+                      leading_player: leading_player,
+                      total_scores:   t_s,
+                      high_pts_to_win: high_pts_to_win,
+                      timestamp:      timestamp,
+                      player_wins:    player_wins,
+                      total_rounds:   total_rounds
+                    }
+                  end)
+  end
 
 
   def validate_game_score(user_id, %{"game_id" => game_id, "round" => round}) do
