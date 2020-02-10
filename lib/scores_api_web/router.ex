@@ -10,8 +10,12 @@ defmodule ScoresApiWeb.Router do
   end
 
   pipeline :api do
+
+    # # plug CORSPlug, origin: "http://localhost:8080"
+    # plug CORSPlug, origin: "*"
     plug :accepts, ["json"]
   end
+
 
   pipeline :jwt_authenticated do
     plug ScoresApiWeb.Auth.Pipeline
@@ -30,6 +34,7 @@ defmodule ScoresApiWeb.Router do
 
     post "/sign_up",            UserController, :create
     post "/sign_in",            UserController, :sign_in
+    get  "/user",               UserController, :show
 
   end
 
@@ -38,7 +43,7 @@ defmodule ScoresApiWeb.Router do
   scope "/api/v1", ScoresApiWeb do
     pipe_through [:api, :jwt_authenticated]
 
-    get "/my_user",               UserController, :show
+    get "/get_user",               UserController, :get_user
 
     resources "/games",           GameController,  only: [:index, :show, :create]
     resources "/scores",          ScoreController, only: [:show, :create]

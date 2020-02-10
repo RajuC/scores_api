@@ -10,16 +10,27 @@ defmodule ScoresApi.Utils do
 
 
 
+  ## ===========================================================
+  def store_initial_game_scores(%{id: gameId, players: players}) do
+    scoreParams =
+      %{game_id: gameId,
+          players: %{active: players, inactive: []},
+          round: 0,
+          game_score: initiate_scores(players, [])
+        }
+    Scores.create_score(scoreParams)
+  end
+
   def list_games_scores(user_id) do
     query = from u in Game, where: u.user_id == ^user_id, select: {u.id, u.title, u.inserted_at, u.high_pts_to_win}
     query
       |> Repo.all()
       |> Enum.map(fn({game_id, title, timestamp, high_pts_to_win}) ->
                     m_scores        = game_id         |> ScoresApi.Scores.list_scores_by_game_id!()
-                    t_s             = m_scores        |> ScoresApi.Utils.cal_total_scores()
-                    leading_player  = high_pts_to_win |> ScoresApi.Utils.get_leading_player(t_s)
-                    player_wins     = m_scores        |> ScoresApi.Utils.cal_player_wins()
-                    total_rounds    = m_scores        |> ScoresApi.Utils.get_total_rounds()
+                    t_s             = m_scores        |> cal_total_scores()
+                    leading_player  = high_pts_to_win |> get_leading_player(t_s)
+                    player_wins     = m_scores        |> cal_player_wins()
+                    total_rounds    = m_scores        |> get_total_rounds()
                     %{
                       game_id:        game_id,
                       title:          title,
@@ -47,7 +58,13 @@ defmodule ScoresApi.Utils do
     map_val |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
   end
 
-  def cal_total_scores(scores) do
+
+
+
+##=============================================================
+## priv functions
+##=============================================================
+  defp cal_total_scores(scores) do
       scores
         |> Enum.reduce([], fn(%{score: p_scores}, total_scores) ->
                               add_scores(p_scores, total_scores)
@@ -57,7 +74,7 @@ defmodule ScoresApi.Utils do
 
 
   ## ===========================================================
-  def get_total_rounds(scores) do
+  defp get_total_rounds(scores) do
     scores
       |> Enum.reduce(-1, fn(_p_scores, total_rounds) ->
                     total_rounds + 1
@@ -65,7 +82,7 @@ defmodule ScoresApi.Utils do
   end
 
   ## ===========================================================
-  def cal_player_wins(scores) do
+  defp cal_player_wins(scores) do
       scores
         |> Enum.reduce([], fn(%{score: p_scores, round: round}, winning_rounds) ->
                       get_winning_rounds(%{score: p_scores, round: round}, winning_rounds)
@@ -74,8 +91,8 @@ defmodule ScoresApi.Utils do
 
 
   ## ===========================================================
-  def get_winning_rounds(%{round: 0}, w_r),  do: w_r
-  def get_winning_rounds(%{score: p_scores}, w_r) do
+  defp get_winning_rounds(%{round: 0}, w_r),  do: w_r
+  defp get_winning_rounds(%{score: p_scores}, w_r) do
     %{name: winner} = p_scores |> Enum.sort_by(&(&1.score))|> List.first()
      winner_map = w_r |> Enum.find(&(&1.name == winner))
       case winner_map do
@@ -89,28 +106,12 @@ defmodule ScoresApi.Utils do
 
 
   ## ===========================================================
-  def get_leading_player(false, scores) do
+  defp get_leading_player(false, scores) do
     scores |> Enum.sort_by(&(&1.score))|> List.first()
   end
-  def get_leading_player(true, scores) do
+  defp get_leading_player(true, scores) do
     scores |> Enum.sort_by(&(&1.score))|> List.last()
   end
-
-
-  ## ===========================================================
-  def store_initial_game_scores(%{id: gameId, players: players}) do
-    scoreParams =
-      %{game_id: gameId,
-          players: %{active: players, inactive: []},
-          round: 0,
-          game_score: initiate_scores(players, [])
-        }
-    Scores.create_score(scoreParams)
-  end
-
-
-
-
 
 
 ## ===========================================================

@@ -14,7 +14,7 @@ defmodule ScoresApiWeb.GameView do
     %{game_id: game.id,
       title: game.title,
       players: game.players,
-      # user_id: game.user_id,
+      user_id: game.user_id,
       high_pts_to_win: game.high_pts_to_win}
   end
 

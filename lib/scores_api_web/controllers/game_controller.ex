@@ -24,7 +24,6 @@ defmodule ScoresApiWeb.GameController do
     user = Guardian.Plug.current_resource(conn)
     mod_game_params = Map.put(game_params, "user_id", user.id)
     with {:ok, %Game{} = game} <- Games.create_game(mod_game_params) do
-    game |> ScoresApi.Utils.store_initial_game_scores
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.game_path(conn, :show, game))

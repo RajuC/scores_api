@@ -30,7 +30,7 @@ defmodule ScoresApiWeb.FallbackController do
 
   ## TBD: need to display valid message response
   def call(conn, {:error, :game_not_available_for_user}) do
-    IO.inspect("game not found for user")
+    # IO.inspect("game not found for user")
     conn
     |> put_status(:not_found)
     |> text("Game Id not found for User")
@@ -38,7 +38,7 @@ defmodule ScoresApiWeb.FallbackController do
 
 
   def call(conn, {:error, :round_already_exists_for_game}) do
-    IO.inspect("round already exists")
+    # IO.inspect("round already exists")
     conn
     |> put_status(:not_found)
     |> text("Round number already exists")

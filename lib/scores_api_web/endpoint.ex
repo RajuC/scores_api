@@ -23,6 +23,7 @@ defmodule ScoresApiWeb.Endpoint do
     plug Phoenix.CodeReloader
   end
 
+
   plug Plug.RequestId
   plug Plug.Logger
 
@@ -42,5 +43,6 @@ defmodule ScoresApiWeb.Endpoint do
     key: "_scores_api_key",
     signing_salt: "BcF7fV4U"
 
+  plug CORSPlug
   plug ScoresApiWeb.Router
 end
