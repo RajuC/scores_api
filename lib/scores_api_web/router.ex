@@ -12,7 +12,7 @@ defmodule ScoresApiWeb.Router do
   pipeline :api do
 
     # # plug CORSPlug, origin: "http://localhost:8080"
-    # plug CORSPlug, origin: "*"
+    plug CORSPlug, origin: "*"
     plug :accepts, ["json"]
   end
 

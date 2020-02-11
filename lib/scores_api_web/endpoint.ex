@@ -43,6 +43,6 @@ defmodule ScoresApiWeb.Endpoint do
     key: "_scores_api_key",
     signing_salt: "BcF7fV4U"
 
-  plug CORSPlug
+#  plug CORSPlug
   plug ScoresApiWeb.Router
 end
