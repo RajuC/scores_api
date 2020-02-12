@@ -1,6 +1,6 @@
 defmodule ScoresApi.Utils do
 
-
+  alias ScoresApi.Utils
   alias ScoresApi.Scores
   alias ScoresApi.Games
   alias ScoresApi.Repo
@@ -11,21 +11,12 @@ defmodule ScoresApi.Utils do
 
 
   ## ===========================================================
-  def store_initial_game_scores(%{id: gameId, players: players}) do
-    scoreParams =
-      %{game_id: gameId,
-          players: %{active: players, inactive: []},
-          round: 0,
-          game_score: initiate_scores(players, [])
-        }
-    Scores.create_score(scoreParams)
-  end
 
   def list_games_scores(user_id) do
     query = from u in Game, where: u.user_id == ^user_id, select: {u.id, u.title, u.inserted_at, u.high_pts_to_win}
     query
       |> Repo.all()
-      |> Enum.map(fn({game_id, title, timestamp, high_pts_to_win}) ->
+      |> pmap(fn({game_id, title, timestamp, high_pts_to_win}) ->
                     m_scores        = game_id         |> ScoresApi.Scores.list_scores_by_game_id!()
                     t_s             = m_scores        |> cal_total_scores()
                     leading_player  = high_pts_to_win |> get_leading_player(t_s)
@@ -53,13 +44,31 @@ defmodule ScoresApi.Utils do
       |> validate_round(game_id,round)
   end
 
-
   def make_key_for_map(map_val) do
     map_val |> Map.new(fn {k, v} -> {String.to_atom(k), v} end)
   end
 
 
+  def pmap(col, func) do
+    col
+    |> Enum.map(&(Task.async(fn -> func.(&1) end)))
+    |> Enum.map(&Task.await/1)
+  end
 
+
+  def initiate_scores(player) do
+   %{name: player, score: 0}
+  end
+
+  def store_initial_game_scores(%{id: gameId, players: players}) do
+    scoreParams =
+      %{game_id: gameId,
+          players: %{active: players, inactive: []},
+          round: 0,
+          game_score: players |> pmap(&Utils.initiate_scores/1)
+        }
+    Scores.create_score(scoreParams)
+  end
 
 ##=============================================================
 ## priv functions
@@ -93,7 +102,7 @@ defmodule ScoresApi.Utils do
   ## ===========================================================
   defp get_winning_rounds(%{round: 0}, w_r),  do: w_r
   defp get_winning_rounds(%{score: p_scores}, w_r) do
-    %{name: winner} = p_scores |> Enum.sort_by(&(&1.score))|> List.first()
+    %{name: winner} = p_scores |> Enum.sort_by(&(&1.score))|> hd()
      winner_map = w_r |> Enum.find(&(&1.name == winner))
       case winner_map do
         nil                           ->
@@ -107,21 +116,12 @@ defmodule ScoresApi.Utils do
 
   ## ===========================================================
   defp get_leading_player(false, scores) do
-    scores |> Enum.sort_by(&(&1.score))|> List.first()
+    scores |> Enum.sort_by(&(&1.score))|> hd()
   end
   defp get_leading_player(true, scores) do
     scores |> Enum.sort_by(&(&1.score))|> List.last()
   end
 
-
-## ===========================================================
-defp initiate_scores([], playerScores), do: playerScores
-defp initiate_scores([player| rest], initialScores) do
-  playerScore =
-    initialScores
-      |> Enum.concat([%{name: player, score: 0}])
-  rest |> initiate_scores(playerScore)
-end
 
 ## ===========================================================
 defp validate_round(true, game_id, round) do

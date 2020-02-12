@@ -68,13 +68,9 @@ end
 
   """
   def create_game(attrs \\ %{}) do
-    {:ok, game} =
       %Game{}
       |> Game.changeset(attrs)
       |> Repo.insert()
-    game
-      |> ScoresApi.Utils.store_initial_game_scores
-    {:ok, game}
 
   end
 

@@ -25,7 +25,10 @@ defmodule ScoresApi.UtilsTest do
         attrs
         |> Enum.into(@game2_attrs)
         |> Games.create_game()
-
+      game1
+        |> Utils.store_initial_game_scores
+      game2
+        |> Utils.store_initial_game_scores
       {game1, game2}
     end
 

@@ -12,6 +12,7 @@ config :scores_api,
 
 # Configures the endpoint
 config :scores_api, ScoresApiWeb.Endpoint,
+  server: true,
   url: [host: "localhost"],
   secret_key_base: "TX0thJhPRIjlu+q3WIoF20h9yXvlecdSRwP7usfzln83UMaGxF3z/rw3nAmUbyWl",
   render_errors: [view: ScoresApiWeb.ErrorView, accepts: ~w(html json)],
@@ -33,4 +34,5 @@ import_config "#{Mix.env()}.exs"
 # Guardian config
 config :scores_api, ScoresApiWeb.Auth.Guardian,
       issuer: "scores_api",
+      ttl: { 2, :days },
       secret_key: "sjxhzlLxh+0RKH7Sk+wgkWBlqABMQpa7qtO5ahO/IcqFzCccQAR5DYq+zNJe40yq"
