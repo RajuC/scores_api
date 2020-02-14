@@ -17,21 +17,21 @@ defmodule ScoresApi.Utils do
     query
       |> Repo.all()
       |> pmap(fn({game_id, title, timestamp, high_pts_to_win}) ->
-                    m_scores        = game_id         |> ScoresApi.Scores.list_scores_by_game_id!()
-                    t_s             = m_scores        |> cal_total_scores()
-                    leading_player  = high_pts_to_win |> get_leading_player(t_s)
-                    player_wins     = m_scores        |> cal_player_wins()
-                    total_rounds    = m_scores        |> get_total_rounds()
+                    m_scores        = p_f(Scores,       :list_scores_by_game_id!,   [game_id])
+                    t_s             = p_f(Utils,        :cal_total_scores,          [m_scores])
+                    leading_player  = Task.async(Utils, :get_leading_player,        [high_pts_to_win, t_s])
+                    player_wins     = Task.async(Utils, :cal_player_wins,           [m_scores])
+                    total_rounds    = Task.async(Utils, :get_total_rounds,          [m_scores])
                     %{
-                      game_id:        game_id,
-                      title:          title,
-                      scores:         m_scores,
-                      leading_player: leading_player,
-                      total_scores:   t_s,
-                      high_pts_to_win: high_pts_to_win,
-                      timestamp:      timestamp,
-                      player_wins:    player_wins,
-                      total_rounds:   total_rounds
+                      game_id:          game_id,
+                      title:            title,
+                      scores:           m_scores,
+                      high_pts_to_win:  high_pts_to_win,
+                      timestamp:        timestamp,
+                      total_scores:     t_s,
+                      leading_player:   leading_player  |> Task.await(),
+                      player_wins:      player_wins     |> Task.await(),
+                      total_rounds:     total_rounds    |> Task.await()
                     }
                   end)
   end
@@ -55,6 +55,10 @@ defmodule ScoresApi.Utils do
     |> Enum.map(&Task.await/1)
   end
 
+  def p_f(m,f, args) do
+    res = Task.async(m, f, args)
+    res |> Task.await
+  end
 
   def initiate_scores(player) do
    %{name: player, score: 0}
@@ -70,10 +74,9 @@ defmodule ScoresApi.Utils do
     Scores.create_score(scoreParams)
   end
 
+
 ##=============================================================
-## priv functions
-##=============================================================
-  defp cal_total_scores(scores) do
+  def cal_total_scores(scores) do
       scores
         |> Enum.reduce([], fn(%{score: p_scores}, total_scores) ->
                               add_scores(p_scores, total_scores)
@@ -81,9 +84,8 @@ defmodule ScoresApi.Utils do
   end
 
 
-
-  ## ===========================================================
-  defp get_total_rounds(scores) do
+## ===========================================================
+  def get_total_rounds(scores) do
     scores
       |> Enum.reduce(-1, fn(_p_scores, total_rounds) ->
                     total_rounds + 1
@@ -91,7 +93,7 @@ defmodule ScoresApi.Utils do
   end
 
   ## ===========================================================
-  defp cal_player_wins(scores) do
+  def cal_player_wins(scores) do
       scores
         |> Enum.reduce([], fn(%{score: p_scores, round: round}, winning_rounds) ->
                       get_winning_rounds(%{score: p_scores, round: round}, winning_rounds)
@@ -100,6 +102,17 @@ defmodule ScoresApi.Utils do
 
 
   ## ===========================================================
+  def get_leading_player(false, scores) do
+    scores |> Enum.sort_by(&(&1.score))|> hd()
+  end
+  def get_leading_player(true, scores) do
+    scores |> Enum.sort_by(&(&1.score))|> List.last()
+  end
+
+##=============================================================
+## priv functions
+## ===========================================================
+
   defp get_winning_rounds(%{round: 0}, w_r),  do: w_r
   defp get_winning_rounds(%{score: p_scores}, w_r) do
     %{name: winner} = p_scores |> Enum.sort_by(&(&1.score))|> hd()
@@ -113,14 +126,6 @@ defmodule ScoresApi.Utils do
       end
   end
 
-
-  ## ===========================================================
-  defp get_leading_player(false, scores) do
-    scores |> Enum.sort_by(&(&1.score))|> hd()
-  end
-  defp get_leading_player(true, scores) do
-    scores |> Enum.sort_by(&(&1.score))|> List.last()
-  end
 
 
 ## ===========================================================
