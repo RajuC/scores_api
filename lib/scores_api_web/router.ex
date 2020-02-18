@@ -32,9 +32,16 @@ defmodule ScoresApiWeb.Router do
   scope "/api/v1", ScoresApiWeb do
     pipe_through :api
 
-    post "/sign_up",            UserController, :create
-    post "/sign_in",            UserController, :sign_in
-    get  "/user",               UserController, :show
+    options   "/sign_up",             UserController, :options
+    options   "/sign_in",             UserController, :options
+    options   "/user",                UserController, :options
+
+    post      "/sign_up",             UserController, :create
+    post      "/sign_in",             UserController, :sign_in
+    get       "/user",                UserController, :show
+
+
+
 
   end
 
@@ -43,11 +50,16 @@ defmodule ScoresApiWeb.Router do
   scope "/api/v1", ScoresApiWeb do
     pipe_through [:api, :jwt_authenticated]
 
-    get "/get_user",               UserController, :get_user
+    get         "/get_user",        UserController,   :get_user
+    resources   "/games",           GameController,   only: [:index, :show, :create]
+    resources   "/scores",          ScoreController,  only: [:show, :create]
+    get         "/games_scores",    GameController,   :all_games_with_scores
 
-    resources "/games",           GameController,  only: [:index, :show, :create]
-    resources "/scores",          ScoreController, only: [:show, :create]
-    get "/games_scores",          GameController,  :all_games_with_scores
+
+    options   "/get_user",          UserController,   :options
+    options   "/games",             GameController,   :options
+    options   "/scores",            ScoreController,  :options
+    options   "/games_scores",      GameController,   :options
 
   end
 end

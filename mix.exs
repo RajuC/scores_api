@@ -46,7 +46,7 @@ defmodule ScoresApi.MixProject do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:guardian, "~> 1.0"},
-      {:cors_plug, "~> 1.1"}
+      {:cors_plug, "~> 2.0"}
     ]
   end
 
