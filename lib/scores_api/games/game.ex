@@ -6,7 +6,8 @@ defmodule ScoresApi.Games.Game do
     field :high_pts_to_win, :boolean, default: false
     field :players, {:array, :string}
     field :title, :string
-    field :user_id, :integer
+    has_many :rounds, ScoresApi.Rounds.Round
+    belongs_to :user, ScoresApi.Users.User
 
     timestamps()
   end
@@ -14,7 +15,7 @@ defmodule ScoresApi.Games.Game do
   @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:title, :players, :user_id, :high_pts_to_win])
-    |> validate_required([:title, :players, :user_id, :high_pts_to_win])
+    |> cast(attrs, [:title, :players, :high_pts_to_win])
+    |> validate_required([:title, :players, :high_pts_to_win])
   end
 end

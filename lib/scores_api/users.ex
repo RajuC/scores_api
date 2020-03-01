@@ -8,10 +8,9 @@ defmodule ScoresApi.Users do
 
   alias ScoresApi.Users.User
 
+
   alias  ScoresApiWeb.Auth.Guardian
   import Comeonin.Bcrypt, only: [checkpw: 2, dummy_checkpw: 0]
-
-
 
   @doc """
   Returns the list of users.
@@ -107,7 +106,6 @@ defmodule ScoresApi.Users do
     User.changeset(user, %{})
   end
 
-
   def token_sign_in(email, password) do
     case email_password_auth(email, password) do
       {:ok, user} ->
@@ -143,6 +141,7 @@ defmodule ScoresApi.Users do
       {:error, :invalid_password}
     end
   end
+
 
 
 end

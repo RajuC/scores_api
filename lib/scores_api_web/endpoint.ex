@@ -18,11 +18,8 @@ defmodule ScoresApiWeb.Endpoint do
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
-    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
-    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
-
 
   plug Plug.RequestId
   plug Plug.Logger
@@ -41,9 +38,7 @@ defmodule ScoresApiWeb.Endpoint do
   plug Plug.Session,
     store: :cookie,
     key: "_scores_api_key",
-    signing_salt: "BcF7fV4U"
-
-  # plug CORSPlug, origin: "*"
+    signing_salt: "40zYZOqi"
 
   plug ScoresApiWeb.Router
 end

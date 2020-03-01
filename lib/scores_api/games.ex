@@ -13,31 +13,14 @@ defmodule ScoresApi.Games do
 
   ## Examples
 
-      iex> list_games(user_id)
+      iex> list_games()
       [%Game{}, ...]
 
   """
-  def list_games(user_id) do
-    query = from u in Game, where: u.user_id == ^user_id
-    query
-      |> Repo.all()
+  def list_games(user) do
+    user_games = Repo.preload(user, [:games])
+    user_games.games
   end
-
-
-
-## =======
-
-def list_game_ids(user_id) do
-  query = from u in Game, where: u.user_id == ^user_id, select: u.id
-  query
-    |> Repo.all()
-end
-
-##==========
-
-
-
-
 
   @doc """
   Gets a single game.
@@ -67,11 +50,11 @@ end
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_game(attrs \\ %{}) do
-      %Game{}
-      |> Game.changeset(attrs)
-      |> Repo.insert()
-
+  def create_game(user, attrs \\ %{}) do
+    %Game{}
+    |> Game.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
+    |> Repo.insert()
   end
 
   @doc """
@@ -86,9 +69,10 @@ end
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_game(%Game{} = game, attrs) do
+  def update_game(user, %Game{} = game, attrs) do
     game
     |> Game.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:user, user)
     |> Repo.update()
   end
 
