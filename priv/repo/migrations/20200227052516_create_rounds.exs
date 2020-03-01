@@ -1,10 +1,10 @@
-defmodule ScoresApi.Repo.Migrations.CreateScores do
+defmodule ScoresApi.Repo.Migrations.CreateRounds do
   use Ecto.Migration
 
   def change do
-    create table(:scores) do
+    create table(:rounds) do
       add :game_id, :integer
-      add :round, :integer
+      add :round_num, :integer
       add :game_score, {:array, :map}
       add :players, :map
 
