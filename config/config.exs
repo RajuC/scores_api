@@ -14,8 +14,8 @@ config :scores_api,
 config :scores_api, ScoresApiWeb.Endpoint,
   server: true,
   url: [host: "localhost"],
-  secret_key_base: "TX0thJhPRIjlu+q3WIoF20h9yXvlecdSRwP7usfzln83UMaGxF3z/rw3nAmUbyWl",
-  render_errors: [view: ScoresApiWeb.ErrorView, accepts: ~w(html json)],
+  secret_key_base: "prZLtQfd9X2tClaXky+D1Fl3kH0zqqacCFpvpbPkIP9ddl0d698DbbwfRUk1CMCi",
+  render_errors: [view: ScoresApiWeb.ErrorView, accepts: ~w(json)],
   pubsub: [name: ScoresApi.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
@@ -29,6 +29,7 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+
 
 
 # Guardian config
