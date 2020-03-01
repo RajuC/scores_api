@@ -3,7 +3,7 @@ defmodule ScoresApi.Rounds.Round do
   import Ecto.Changeset
 
   schema "rounds" do
-    field :game_score, {:array, :map}
+    field :score, {:array, :map}
     field :players, :map
     field :round_num, :integer
     belongs_to :game, ScoresApi.Games.Game
@@ -14,7 +14,7 @@ defmodule ScoresApi.Rounds.Round do
   @doc false
   def changeset(round, attrs) do
     round
-    |> cast(attrs, [:round_num, :game_score, :players])
-    |> validate_required([:round_num, :game_score, :players])
+    |> cast(attrs, [:round_num, :score, :players])
+    |> validate_required([:round_num, :score, :players])
   end
 end

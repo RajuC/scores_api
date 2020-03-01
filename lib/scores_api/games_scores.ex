@@ -52,7 +52,7 @@ defmodule ScoresApi.GamesScores do
     game
       |> Repo.preload([:rounds])
       |> Map.get(:rounds)
-      |> Enum.map(fn(x) -> %{game_score:  make_keys_atom_for_g_s(x.game_score),
+      |> Enum.map(fn(x) -> %{game_score:  make_keys_atom_for_g_s(x.score),
                              round_num:   x.round_num,
                              time:        x.inserted_at} end)
 
@@ -60,19 +60,19 @@ defmodule ScoresApi.GamesScores do
 
 ##=============================================================
   def calculate_t_s([]), do: []
-  def calculate_t_s([score|scores]) do
-      # r_s = score.game_score |> Enum.map(fn x -> make_key_for_map(x) end)
-      scores
-        |> Enum.reduce(score.game_score, fn(%{game_score: p_scores}, total_scores) ->
+  def calculate_t_s([round|rounds]) do
+      # r_s = score.score |> Enum.map(fn x -> make_key_for_map(x) end)
+      rounds
+        |> Enum.reduce(round.score, fn(%{score: p_scores}, total_scores) ->
                               update_score_by_name(p_scores, total_scores)
                     end)
   end
 ## ===========================================================
   def cal_player_wins([]), do: []
-  def cal_player_wins(scores) do
-      scores
-        |> Enum.reduce([], fn(%{game_score: p_scores, round_num: round}, winning_rounds) ->
-                      get_winning_rounds(%{game_score: p_scores, round_num: round}, winning_rounds)
+  def cal_player_wins(rounds) do
+      rounds
+        |> Enum.reduce([], fn(%{score: p_scores, round_num: round}, winning_rounds) ->
+                      get_winning_rounds(%{score: p_scores, round_num: round}, winning_rounds)
                     end)
   end
 
@@ -103,7 +103,7 @@ defmodule ScoresApi.GamesScores do
 
 ## ===========================================================
   defp get_winning_rounds(%{round_num: 0}, w_r),  do: w_r
-  defp get_winning_rounds(%{game_score: p_scores}, w_r) do
+  defp get_winning_rounds(%{score: p_scores}, w_r) do
     %{name: winner} = p_scores |> Enum.sort_by(&(&1.score))|> hd()
      winner_map = w_r |> Enum.find(&(&1.name == winner))
       case winner_map do

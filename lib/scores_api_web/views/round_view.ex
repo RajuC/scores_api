@@ -14,7 +14,7 @@ defmodule ScoresApiWeb.RoundView do
     %{id: round.id,
       game_id: round.game_id,
       round_num: round.round_num,
-      game_score: round.game_score,
+      score: round.score,
       players: round.players}
   end
 end
