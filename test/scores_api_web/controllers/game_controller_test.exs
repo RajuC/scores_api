@@ -1,7 +1,7 @@
 defmodule ScoresApiWeb.GameControllerTest do
   use ScoresApiWeb.ConnCase
 
-  alias ScoresApi.Games
+  # alias ScoresApi.Games
   # alias ScoresApi.Games.Game
   alias ScoresApi.Users
     # alias ScoresApi.Users.User
@@ -21,19 +21,18 @@ defmodule ScoresApiWeb.GameControllerTest do
   }
   @invalid_attrs %{high_pts_to_win: nil, players: nil, title: nil}
 
-  def fixture(:game) do
-    {:ok, game} = Games.create_game(@create_attrs)
-    game
-  end
+
 
 
   setup %{conn: conn} do
     #create user and get token
     {:ok, user} = Users.create_user(@create_user_attrs)
     {:ok, token, _claims} = Guardian.encode_and_sign(user)
-      # add authorization header to request
-    conn = conn |> put_req_header("authorization", "Bearer #{token}")
-      # pass the connection and the user to the test
+    conn =
+      conn
+        |> bypass_through(PhoenixTestSession.Router, [:api, :jwt_authenticated])
+        |> put_req_header("accept", "application/json")
+        |> put_req_header("authorization", "Bearer " <> token)
     {:ok, conn: conn}
   end
 
@@ -41,7 +40,7 @@ defmodule ScoresApiWeb.GameControllerTest do
   describe "index" do
     test "lists all games", %{conn: conn} do
       conn = get(conn, Routes.game_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
@@ -49,7 +48,7 @@ defmodule ScoresApiWeb.GameControllerTest do
   describe "list all games with scores" do
     test "list all games with scores", %{conn: conn} do
       conn = get(conn, Routes.game_path(conn, :all_games_with_scores))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
@@ -57,18 +56,21 @@ defmodule ScoresApiWeb.GameControllerTest do
   describe "create game" do
     test "renders game when data is valid", %{conn: conn} do
       conn = post(conn, Routes.game_path(conn, :create), game: @create_attrs)
-      assert %{"game_id" => id, "title" => title, "players" => players, "high_pts_to_win" => high_pts_to_win, "user_id" => user_id} = json_response(conn, 201)["data"]
+      assert %{"high_pts_to_win"      => high_pts_to_win,
+               "id"                   =>  id,
+               "players"              => players,
+               "title"                => title
+              } = json_response(conn, 201)
 
 
       conn = get(conn, Routes.game_path(conn, :show, id))
 
       assert %{
-               "game_id" => id,
-               "high_pts_to_win" => high_pts_to_win,
-               "players" => players,
-               "title" => title,
-               "user_id" => user_id
-             } = json_response(conn, 200)["data"]
+               "id"                   => id,
+               "high_pts_to_win"      => high_pts_to_win,
+               "players"              => players,
+               "title"                => title
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -78,8 +80,5 @@ defmodule ScoresApiWeb.GameControllerTest do
   end
 
 
-  # defp create_game(_) do
-  #   game = fixture(:game)
-  #   {:ok, game: game}
-  # end
+
 end

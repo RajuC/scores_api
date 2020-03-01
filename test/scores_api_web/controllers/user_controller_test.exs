@@ -10,42 +10,82 @@ defmodule ScoresApiWeb.UserControllerTest do
     password: "some password",
     password_confirmation: "some password"
   }
+
+  @sign_in_attrs %{
+    email: "email@email.com",
+    password: "some password",
+  }
+
+  @invalid_sign_in_attrs %{
+    email: "email@email.com",
+    password: "invalid password",
+  }
+
   # @update_attrs %{
   #   email: "some updated email",
   #   name: "some updated name",
   #   password_hash: "some updated password_hash"
   # }
+
   @invalid_attrs %{email: nil, name: nil, password_hash: nil}
 
-  def fixture(:user) do
-    {:ok, user} = Users.create_user(@create_attrs)
-    user
-  end
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
 
-  describe "create user" do
-    test "renders user when data is valid", %{conn: conn} do
+  describe "create user and show " do
+    test "renders user when sign_up data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert %{"user_id" => id, "email" => "email@email.com", "token" => token} = json_response(conn, 201)
+      assert %{
+               "user_id"    => id,
+               "email"      => email,
+               "token"      => token} = json_response(conn, 201)
 
-      conn = get(conn, Routes.user_path(conn, :show, %{"id" => id}))
+      conn = get(conn, Routes.user_path(conn, :show, id))
 
       assert %{
-               "id" => id,
-               "email" => "email@email.com",
-               "name" => "some name"
-             } = json_response(conn, 200)
+               "id"         => id,
+               "email"      => email,
+               "name"       => name} = json_response(conn, 200)
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
+    test "renders errors when sign_up data is invalid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+
   end
+
+
+
+  describe "sign_in and get_user" do
+    test "renders user when sign_in data is valid", %{conn: conn} do
+      {:ok, _user} = Users.create_user(@create_attrs)
+      conn1 = post(conn, Routes.user_path(conn, :sign_in), @sign_in_attrs)
+      assert %{"user_id" => id, "email" => email, "token" => token} = json_response(conn1, 200)
+      conn =
+        conn
+          |> bypass_through(PhoenixTestSession.Router, [:api, :jwt_authenticated])
+          |> put_req_header("authorization", "Bearer " <> token)
+          |> get(Routes.user_path(conn, :get_user))
+
+      assert %{
+               "id"       => id,
+               "email"    => email,
+               "name"     => name
+             } = json_response(conn, 200)
+    end
+
+    test "renders user when sign_in data is invalid", %{conn: conn} do
+      {:ok, _user} = Users.create_user(@create_attrs)
+      conn1 = post(conn, Routes.user_path(conn, :sign_in), @invalid_sign_in_attrs)
+      assert json_response(conn1, 401)["errors"] == %{"detail" => "Not Found"}
+    end
+  end
+
+
 
   # describe "update user" do
   #   setup [:create_user]
@@ -82,7 +122,7 @@ defmodule ScoresApiWeb.UserControllerTest do
   #     end
   #   end
   # end
-
+  #
   # defp create_user(_) do
   #   user = fixture(:user)
   #   {:ok, user: user}
