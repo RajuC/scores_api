@@ -52,7 +52,7 @@ defmodule ScoresApi.GamesScores do
     game
       |> Repo.preload([:rounds])
       |> Map.get(:rounds)
-      |> Enum.map(fn(x) -> %{game_score:  make_keys_atom_for_g_s(x.score),
+      |> Enum.map(fn(x) -> %{score:  make_keys_atom_for_g_s(x.score),
                              round_num:   x.round_num,
                              time:        x.inserted_at} end)
 

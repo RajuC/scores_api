@@ -8,9 +8,9 @@ defmodule ScoresApi.RoundsTest do
   describe "rounds" do
     alias ScoresApi.Rounds.Round
 
-    @valid_attrs %{game_score: [%{"name"=> "raj", "score" => 30}, %{"name" => "som", "score" => 25}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
-    @update_attrs %{game_score: [%{"name"=> "raj", "score" => 35}, %{"name" => "som", "score" => 28}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
-    @invalid_attrs %{game_score: nil, players: nil, round_num: nil}
+    @valid_attrs %{score: [%{"name"=> "raj", "score" => 30}, %{"name" => "som", "score" => 25}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
+    @update_attrs %{score: [%{"name"=> "raj", "score" => 35}, %{"name" => "som", "score" => 28}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
+    @invalid_attrs %{score: nil, players: nil, round_num: nil}
 
     @valid_game_attrs  %{high_pts_to_win: true, players: ["raj", "somu"], title: "some title"}
     @create_user_attrs %{email: "email@email.com", name: "some name", password: "some password", password_confirmation: "some password"}
@@ -40,7 +40,7 @@ defmodule ScoresApi.RoundsTest do
       {:ok, user}   = Users.create_user(@create_user_attrs)
       {:ok, game}   = Games.create_game(user, @valid_game_attrs)
       assert {:ok, %Round{} = round} = Rounds.create_round(game, @valid_attrs)
-      assert round.game_score == [%{"name" => "raj", "score" => 30}, %{"name" => "som", "score" => 25}]
+      assert round.score == [%{"name" => "raj", "score" => 30}, %{"name" => "som", "score" => 25}]
       assert round.players == %{"active" => ["raj", "som"], "inactive" => []}
       assert round.round_num == 1
     end
@@ -56,7 +56,7 @@ defmodule ScoresApi.RoundsTest do
       {:ok, game}   = Games.create_game(user, @valid_game_attrs)
       round = round_fixture(game)
       assert {:ok, %Round{} = round} = Rounds.update_round(game, round, @update_attrs)
-      assert round.game_score == [%{"name" => "raj", "score" => 35}, %{"name" => "som", "score" => 28}]
+      assert round.score == [%{"name" => "raj", "score" => 35}, %{"name" => "som", "score" => 28}]
       assert round.players == %{"active" => ["raj", "som"], "inactive" => []}
       assert round.round_num == 1
     end

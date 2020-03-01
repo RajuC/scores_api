@@ -9,8 +9,8 @@ defmodule ScoresApi.GamesScoresTest do
     alias ScoresApi.Users
     alias ScoresApi.Rounds
 
-    @valid_score_attrs1 %{game_score: [%{"name"=> "raj", "score" => 30}, %{"name" => "som", "score" => 0}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
-    @valid_score_attrs2 %{game_score: [%{"name"=> "raj", "score" => 0}, %{"name" => "som", "score" => 45}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 2}
+    @valid_score_attrs1 %{score: [%{"name"=> "raj", "score" => 30}, %{"name" => "som", "score" => 0}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 1}
+    @valid_score_attrs2 %{score: [%{"name"=> "raj", "score" => 0}, %{"name" => "som", "score" => 45}], players: %{"active" => ["raj", "som"], "inactive" => []}, round_num: 2}
 
 
 
