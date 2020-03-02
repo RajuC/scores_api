@@ -407,7 +407,6 @@
   },
   "host": "localhost:4000",
   "info": {
-    "host": "http://scorezcount.com:4000",
     "title": "ScorezCount API",
     "version": "1.0"
   },

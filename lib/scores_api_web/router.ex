@@ -56,8 +56,8 @@ defmodule ScoresApiWeb.Router do
     %{
       info: %{
         version: "1.0",
-        title: "ScorezCount API",
-        host: "http://scorezcount.com:4000"
+        title: "ScorezCount API"
+        # host: "http://scorezcount.com:4000"
       },
       schemes: ["http"]
     #   ,
