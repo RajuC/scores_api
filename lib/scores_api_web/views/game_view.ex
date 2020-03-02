@@ -3,7 +3,7 @@ defmodule ScoresApiWeb.GameView do
   alias ScoresApiWeb.GameView
 
   def render("index.json", %{games: games}) do
-    render_many(games, GameView, "game.json")
+    %{data: render_many(games, GameView, "game.json")}
   end
 
   def render("show.json", %{game: game}) do
@@ -11,14 +11,15 @@ defmodule ScoresApiWeb.GameView do
   end
 
   def render("game.json", %{game: game}) do
-    %{id: game.id,
+    %{game_id: game.id,
       title: game.title,
       players: game.players,
-      high_pts_to_win: game.high_pts_to_win}
+      high_pts_to_win: game.high_pts_to_win,
+      inserted_at: game.inserted_at}
   end
 
   def render("g_s_index.json", %{games: games}) do
-    render_many(games, GameView, "game_scores.json")
+    %{data: render_many(games, GameView, "game_scores.json")}
   end
 
   def render("game_scores.json", %{game: game}) do

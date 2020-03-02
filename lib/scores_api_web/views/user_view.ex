@@ -15,13 +15,15 @@ defmodule ScoresApiWeb.UserView do
       user_id: user.id,
       email: user.email,
       token: token,
+      inserted_at: user.inserted_at
     }
   end
 
   def render("user.json", %{user: user}) do
     %{id: user.id,
       email: user.email,
-      name:  user.name}
+      name:  user.name,
+      inserted_at: user.inserted_at}
   end
 
 end

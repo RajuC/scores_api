@@ -77,7 +77,7 @@ defmodule ScoresApi.GamesScores do
   end
 
   ## ===========================================================
-  def get_leading_player(false, []), do: []
+  def get_leading_player(false, []), do: %{}
   def get_leading_player(false, scores) do
     scores |> Enum.sort_by(&(&1.score))|> hd()
   end

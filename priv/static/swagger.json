@@ -1,0 +1,979 @@
+{
+  "definitions": {
+    "CreateGameRequest": {
+      "description": "POST body for creating a Game for a User",
+      "properties": {
+        "game": {
+          "$ref": "#/definitions/Game",
+          "description": "The Create Game Request details"
+        }
+      },
+      "title": "CreateGameRequest",
+      "type": "object"
+    },
+    "CreateRoundRequest": {
+      "description": "POST body for creating a Round for a Game",
+      "properties": {
+        "game_id": {
+          "description": "game id",
+          "type": "integer"
+        },
+        "round": {
+          "$ref": "#/definitions/Round",
+          "description": "The Create Round Request details"
+        }
+      },
+      "required": [
+        "round",
+        "game_id"
+      ],
+      "title": "CreateRoundRequest",
+      "type": "object"
+    },
+    "CreateUserRequest": {
+      "description": "POST body for creating a user",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User",
+          "description": "The user Request details"
+        }
+      },
+      "title": "CreateUserRequest",
+      "type": "object"
+    },
+    "Game": {
+      "description": "Users Game",
+      "properties": {
+        "high_pts_to_win": {
+          "description": "false",
+          "type": "boolean"
+        },
+        "players": {
+          "description": "Players List",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "title": {
+          "description": "Game name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "players",
+        "high_pts_to_win",
+        "title"
+      ],
+      "title": "Game",
+      "type": "object"
+    },
+    "GameResponse": {
+      "description": "Response schema for a single Game",
+      "properties": {
+        "game_id": {
+          "description": "Game ID",
+          "type": "integer"
+        },
+        "high_pts_to_win": {
+          "description": "false",
+          "type": "boolean"
+        },
+        "inserted_at": {
+          "description": "Creation timestamp",
+          "format": "datetime",
+          "type": "string"
+        },
+        "players": {
+          "description": "Players List",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "title": {
+          "description": "Game Title",
+          "type": "string"
+        }
+      },
+      "title": "GameResponse",
+      "type": "object"
+    },
+    "GameScore": {
+      "description": "Response schema for a Game Score",
+      "properties": {
+        "game_id": {
+          "description": "Game ID",
+          "type": "integer"
+        },
+        "high_pts_to_win": {
+          "description": "false",
+          "type": "boolean"
+        },
+        "leading_player": {
+          "$ref": "#/definitions/Score",
+          "description": "Leading player with score"
+        },
+        "player_wins": {
+          "description": "No of player_wins with a name",
+          "items": {
+            "$ref": "#/definitions/PlayerWins"
+          },
+          "type": "array"
+        },
+        "rounds": {
+          "description": "Round Scores of a game",
+          "items": {
+            "$ref": "#/definitions/RoundScore"
+          },
+          "type": "array"
+        },
+        "timestamp": {
+          "description": "Game Creation timestamp",
+          "format": "datetime",
+          "type": "string"
+        },
+        "title": {
+          "description": "Game Title",
+          "type": "string"
+        },
+        "total_rounds": {
+          "description": "Total Rounds",
+          "type": "integer"
+        },
+        "total_scores": {
+          "description": "Total Scores for a player of a Game",
+          "items": {
+            "$ref": "#/definitions/Score"
+          },
+          "type": "array"
+        }
+      },
+      "title": "GameScore",
+      "type": "object"
+    },
+    "GamesResponse": {
+      "description": "Response schema for multiple games",
+      "properties": {
+        "data": {
+          "description": "The Games details",
+          "items": {
+            "$ref": "#/definitions/GameResponse"
+          },
+          "type": "array"
+        }
+      },
+      "title": "GamesReponse",
+      "type": "object"
+    },
+    "GamesScores": {
+      "description": "Response schema for GamesScores for an user",
+      "properties": {
+        "data": {
+          "description": "All GamesScores for an user",
+          "items": {
+            "$ref": "#/definitions/GameScore"
+          },
+          "type": "array"
+        }
+      },
+      "title": "GamesScores",
+      "type": "object"
+    },
+    "PlayerWins": {
+      "description": "Num of Player Wins",
+      "properties": {
+        "name": {
+          "description": "Name",
+          "type": "string"
+        },
+        "winning_rounds": {
+          "description": "Num of winning rounds",
+          "type": "integer"
+        }
+      },
+      "title": "PlayerWins",
+      "type": "object"
+    },
+    "Players": {
+      "description": "Active and Inactive Players",
+      "properties": {
+        "active": {
+          "description": "Active Players List",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "inactive": {
+          "description": "Inactive Players List",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "inactive",
+        "active"
+      ],
+      "title": "Players",
+      "type": "object"
+    },
+    "Round": {
+      "description": "Game Round",
+      "properties": {
+        "game_id": {
+          "description": "Game ID",
+          "type": "integer"
+        },
+        "players": {
+          "$ref": "#/definitions/Players",
+          "description": "Active and InactivePlayers List"
+        },
+        "round_num": {
+          "description": "Round Number",
+          "type": "integer"
+        },
+        "score": {
+          "description": "scores with name",
+          "items": {
+            "$ref": "#/definitions/Score"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "players",
+        "score",
+        "round_num",
+        "game_id"
+      ],
+      "title": "Round",
+      "type": "object"
+    },
+    "RoundResponse": {
+      "description": "Response schema for a single Game",
+      "properties": {
+        "game_id": {
+          "description": "Game ID",
+          "type": "integer"
+        },
+        "id": {
+          "description": "Score ID",
+          "type": "integer"
+        },
+        "inserted_at": {
+          "description": "Creation timestamp",
+          "format": "datetime",
+          "type": "string"
+        },
+        "players": {
+          "$ref": "#/definitions/Players",
+          "description": "Active and InactivePlayers List"
+        },
+        "round_num": {
+          "description": "Round Number",
+          "type": "integer"
+        },
+        "score": {
+          "description": "scores with name",
+          "items": {
+            "$ref": "#/definitions/Score"
+          },
+          "type": "array"
+        }
+      },
+      "title": "GameResponse",
+      "type": "object"
+    },
+    "RoundScore": {
+      "description": "Round Score",
+      "properties": {
+        "round_num": {
+          "description": "Round Number",
+          "type": "integer"
+        },
+        "score": {
+          "description": "scores with name",
+          "items": {
+            "$ref": "#/definitions/Score"
+          },
+          "type": "array"
+        },
+        "time": {
+          "description": "Round Creation timestamp",
+          "format": "datetime",
+          "type": "string"
+        }
+      },
+      "title": "RoundScore",
+      "type": "object"
+    },
+    "Score": {
+      "description": "Score",
+      "properties": {
+        "name": {
+          "description": "Name",
+          "type": "string"
+        },
+        "score": {
+          "description": "Score",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "score",
+        "name"
+      ],
+      "title": "Score",
+      "type": "object"
+    },
+    "SignInRequest": {
+      "description": "POST body for singin user",
+      "properties": {
+        "email": {
+          "description": "Email address",
+          "format": "email",
+          "type": "string"
+        },
+        "password": {
+          "description": "User name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password",
+        "email"
+      ],
+      "title": "UserSigninReq",
+      "type": "object"
+    },
+    "User": {
+      "description": "A user of the ScoresApi",
+      "properties": {
+        "email": {
+          "description": "Email address",
+          "format": "email",
+          "type": "string"
+        },
+        "name": {
+          "description": "User name",
+          "type": "string"
+        },
+        "password": {
+          "description": "Password",
+          "type": "string"
+        },
+        "password_confirmation": {
+          "description": "Password Confirmation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "password_confirmation",
+        "password",
+        "email",
+        "name"
+      ],
+      "title": "User",
+      "type": "object"
+    },
+    "UserResponse": {
+      "description": "Response schema for single user",
+      "properties": {
+        "email": {
+          "description": "Email address",
+          "format": "email",
+          "type": "string"
+        },
+        "inserted_at": {
+          "description": "Creation timestamp",
+          "format": "datetime",
+          "type": "string"
+        },
+        "token": {
+          "description": "JWT token",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "User ID",
+          "type": "integer"
+        }
+      },
+      "title": "UserResponse",
+      "type": "object"
+    }
+  },
+  "host": "localhost:4000",
+  "info": {
+    "host": "http://scorezcount.com:4000",
+    "title": "ScorezCount API",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/v1/games": {
+      "get": {
+        "description": "List all games for an User in the database",
+        "operationId": "ScoresApiWeb.GameController.index",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": [
+                {
+                  "game_id": 1,
+                  "high_pts_to_win": false,
+                  "inserted_at": "2017-02-08T12:34:55Z",
+                  "players": [
+                    "raj",
+                    "raj1"
+                  ],
+                  "title": "Rummy"
+                },
+                {
+                  "game_id": 2,
+                  "high_pts_to_win": true,
+                  "inserted_at": "2017-02-08T12:34:55Z",
+                  "players": [
+                    "raj",
+                    "raj1"
+                  ],
+                  "title": "Rummy1"
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/GamesResponse"
+            }
+          }
+        },
+        "summary": "List Games for a User",
+        "tags": [
+          "Game"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Creates Game for an User",
+        "operationId": "ScoresApiWeb.GameController.create",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          },
+          {
+            "description": "The Game details",
+            "in": "body",
+            "name": "game",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateGameRequest"
+            },
+            "x-example": {
+              "game": {
+                "high_pts_to_win": true,
+                "players": [
+                  "Raj",
+                  "Raj1"
+                ],
+                "title": "Rummy"
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "Game created OK",
+            "examples": {
+              "application/json": {
+                "game_id": 2,
+                "high_pts_to_win": true,
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "players": [
+                  "raj",
+                  "raj1"
+                ],
+                "title": "Rummy1"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GameResponse"
+            }
+          }
+        },
+        "summary": "Create Game for an User",
+        "tags": [
+          "Game"
+        ]
+      }
+    },
+    "/api/v1/games/{id}": {
+      "get": {
+        "description": "Show a Game by ID",
+        "operationId": "ScoresApiWeb.GameController.show",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          },
+          {
+            "description": "Game ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "x-example": 3
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "game_id": 2,
+                "high_pts_to_win": true,
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "players": [
+                  "raj",
+                  "raj1"
+                ],
+                "title": "Rummy1"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/GameResponse"
+            }
+          }
+        },
+        "summary": "Show Game",
+        "tags": [
+          "Game"
+        ]
+      }
+    },
+    "/api/v1/games_scores": {
+      "get": {
+        "description": "List all games with scores for an User in the database",
+        "operationId": "ScoresApiWeb.GameController.all_games_with_scores",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": [
+                {
+                  "game_id": 1,
+                  "high_pts_to_win": false,
+                  "leading_player": {},
+                  "player_wins": [],
+                  "rounds": [],
+                  "timestamp": "2020-03-01T08:30:34",
+                  "title": "Rummy",
+                  "total_rounds": 0,
+                  "total_scores": []
+                },
+                {
+                  "game_id": 2,
+                  "high_pts_to_win": false,
+                  "leading_player": {},
+                  "player_wins": [],
+                  "rounds": [],
+                  "timestamp": "2020-03-01T08:30:34",
+                  "title": "Rummy",
+                  "total_rounds": 0,
+                  "total_scores": []
+                }
+              ]
+            },
+            "schema": {
+              "$ref": "#/definitions/GamesScores"
+            }
+          }
+        },
+        "summary": "List Games Scores for a User",
+        "tags": [
+          "Game"
+        ]
+      }
+    },
+    "/api/v1/get_user": {
+      "get": {
+        "description": "Show a user by Bearer Token",
+        "operationId": "ScoresApiWeb.UserController.get_user",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "email": "raj@mail.com",
+                "id": 3,
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "name": "Raj Raj"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        },
+        "summary": "Get User",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/rounds": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Creates Round for a Game for an User",
+        "operationId": "ScoresApiWeb.RoundController.create",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          },
+          {
+            "description": "The Round details",
+            "in": "body",
+            "name": "round",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateRoundRequest"
+            },
+            "x-example": {
+              "game_id": 1,
+              "round": {
+                "players": {
+                  "active": [
+                    "somu",
+                    "raj"
+                  ],
+                  "inactive": []
+                },
+                "round_num": 1,
+                "score": [
+                  {
+                    "name": "raj",
+                    "score": 5
+                  },
+                  {
+                    "name": "somu",
+                    "score": 0
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "User created OK",
+            "examples": {
+              "application/json": {
+                "data": {
+                  "game_id": 1,
+                  "id": 3,
+                  "players": {
+                    "active": [
+                      "somu",
+                      "raj"
+                    ],
+                    "inactive": []
+                  },
+                  "round_num": 1,
+                  "score": [
+                    {
+                      "name": "raj",
+                      "score": 5
+                    },
+                    {
+                      "name": "somu",
+                      "score": 0
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RoundResponse"
+            }
+          }
+        },
+        "summary": "Create Round for a Game for an User",
+        "tags": [
+          "Round"
+        ]
+      }
+    },
+    "/api/v1/rounds/{id}": {
+      "get": {
+        "description": "Show a Round by ID",
+        "operationId": "ScoresApiWeb.RoundController.show",
+        "parameters": [
+          {
+            "description": "Bearer <> JWT Token",
+            "in": "header",
+            "name": "authorization",
+            "required": true,
+            "type": "string",
+            "x-example": "Bearer jwt_token"
+          },
+          {
+            "description": "Round ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "x-example": 3
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "User created OK",
+            "examples": {
+              "application/json": {
+                "data": {
+                  "game_id": 1,
+                  "id": 3,
+                  "players": {
+                    "active": [
+                      "somu",
+                      "raj"
+                    ],
+                    "inactive": []
+                  },
+                  "round_num": 1,
+                  "score": [
+                    {
+                      "name": "raj",
+                      "score": 5
+                    },
+                    {
+                      "name": "somu",
+                      "score": 0
+                    }
+                  ]
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/RoundResponse"
+            }
+          }
+        },
+        "summary": "Show Round",
+        "tags": [
+          "Round"
+        ]
+      }
+    },
+    "/api/v1/sign_in": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Sign in User ",
+        "operationId": "ScoresApiWeb.UserController.sign_in",
+        "parameters": [
+          {
+            "description": "The user Sign in details",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/SignInRequest"
+            },
+            "x-example": {
+              "email": "raj@mail.com",
+              "password": "password"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "email": "raj@email.com",
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY29yZXNfYXBpIiwiZXhwIjoxNTgzMjMzNjgxLCJpYXQiOjE1ODMwNjA4ODEsImlzcyI6InNjb3Jlc19hcGkiLCJqdGkiOiIxMWZiOWE1MC0yNzRmLTRjZTAtYmY4NS03ZGQ2YWQwYzk4MmUiLCJuYmYiOjE1ODMwNjA4ODAsInN1YiI6IjMiLCJ0eXAiOiJhY2Nl",
+                "user_id": 3
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        },
+        "summary": "User Sign in",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/sign_up": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "Creates a new user",
+        "operationId": "ScoresApiWeb.UserController.create",
+        "parameters": [
+          {
+            "description": "The user details",
+            "in": "body",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CreateUserRequest"
+            },
+            "x-example": {
+              "user": {
+                "email": "raj@mail.com",
+                "name": "Raj Raj",
+                "password": "password",
+                "password_confirmation": "password"
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "User created OK",
+            "examples": {
+              "application/json": {
+                "email": "raj@email.com",
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJzY29yZXNfYXBpIiwiZXhwIjoxNTgzMjMzNjgxLCJpYXQiOjE1ODMwNjA4ODEsImlzcyI6InNjb3Jlc19hcGkiLCJqdGkiOiIxMWZiOWE1MC0yNzRmLTRjZTAtYmY4NS03ZGQ2YWQwYzk4MmUiLCJuYmYiOjE1ODMwNjA4ODAsInN1YiI6IjMiLCJ0eXAiOiJhY2Nl",
+                "user_id": 3
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        },
+        "summary": "Create user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "description": "Show a user by ID",
+        "operationId": "ScoresApiWeb.UserController.show",
+        "parameters": [
+          {
+            "description": "User ID",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "integer",
+            "x-example": 3
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "email": "raj@mail.com",
+                "id": 3,
+                "inserted_at": "2017-02-08T12:34:55Z",
+                "name": "Raj Raj"
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        },
+        "summary": "Show User",
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0"
+}

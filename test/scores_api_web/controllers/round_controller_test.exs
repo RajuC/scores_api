@@ -61,7 +61,7 @@ defmodule ScoresApiWeb.RoundControllerTest do
   describe "create round" do
     test "renders round when data is valid", %{conn: conn} do
       conn = post(conn, Routes.game_path(conn, :create), game: @create_game_attrs)
-      assert %{"id" => game_id} = json_response(conn, 201)
+      assert %{"game_id" => game_id} = json_response(conn, 201)
 
       conn = post(conn, Routes.round_path(conn, :create), %{game_id: game_id, round: @create_attrs})
       assert %{"game_id" => game_id, "id" => id} = json_response(conn, 201)["data"]
@@ -79,7 +79,7 @@ defmodule ScoresApiWeb.RoundControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.game_path(conn, :create), game: @create_game_attrs)
-      assert %{"id" => game_id } = json_response(conn, 201)
+      assert %{"game_id" => game_id } = json_response(conn, 201)
 
       conn = post(conn, Routes.round_path(conn, :create), %{game_id: game_id, round: @invalid_attrs})
       assert json_response(conn, 422)["errors"] != %{}

@@ -7,7 +7,8 @@ defmodule ScoresApi.MixProject do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      # compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -44,7 +45,9 @@ defmodule ScoresApi.MixProject do
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 1.0"},
       {:guardian, "~> 1.0"},
-      {:cors_plug, "~> 2.0"}
+      {:cors_plug, "~> 2.0"},
+      {:phoenix_swagger, "~> 0.8"},
+      {:ex_json_schema, "~> 0.5"} # optional
     ]
   end
 
@@ -58,7 +61,8 @@ defmodule ScoresApi.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      swagger: ["phx.swagger.generate priv/static/swagger.json --router ScoresApiWeb.Router --endpoint ScoresApiWeb.Endpoint"]
     ]
   end
 end

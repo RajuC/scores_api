@@ -40,7 +40,7 @@ defmodule ScoresApiWeb.GameControllerTest do
   describe "index" do
     test "lists all games", %{conn: conn} do
       conn = get(conn, Routes.game_path(conn, :index))
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200)["data"] == []
     end
   end
 
@@ -48,7 +48,7 @@ defmodule ScoresApiWeb.GameControllerTest do
   describe "list all games with scores" do
     test "list all games with scores", %{conn: conn} do
       conn = get(conn, Routes.game_path(conn, :all_games_with_scores))
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200)["data"] == []
     end
   end
 
@@ -57,7 +57,7 @@ defmodule ScoresApiWeb.GameControllerTest do
     test "renders game when data is valid", %{conn: conn} do
       conn = post(conn, Routes.game_path(conn, :create), game: @create_attrs)
       assert %{"high_pts_to_win"      => high_pts_to_win,
-               "id"                   =>  id,
+               "game_id"                   =>  id,
                "players"              => players,
                "title"                => title
               } = json_response(conn, 201)
@@ -66,7 +66,7 @@ defmodule ScoresApiWeb.GameControllerTest do
       conn = get(conn, Routes.game_path(conn, :show, id))
 
       assert %{
-               "id"                   => id,
+               "game_id"                   => id,
                "high_pts_to_win"      => high_pts_to_win,
                "players"              => players,
                "title"                => title

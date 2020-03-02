@@ -37,3 +37,14 @@ config :scores_api, ScoresApiWeb.Auth.Guardian,
       issuer: "scores_api",
       ttl: { 2, :days },
       secret_key: "sjxhzlLxh+0RKH7Sk+wgkWBlqABMQpa7qtO5ahO/IcqFzCccQAR5DYq+zNJe40yq"
+
+
+config :scores_api, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [
+      router: ScoresApiWeb.Router,     # phoenix routes will be converted to swagger paths
+      endpoint: ScoresApiWeb.Endpoint  # (optional) endpoint config used to set host, port and https schemes.
+    ]
+  }
+
+config :phoenix_swagger, json_library: Jason

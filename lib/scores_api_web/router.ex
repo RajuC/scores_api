@@ -13,6 +13,8 @@ defmodule ScoresApiWeb.Router do
 
 
 
+
+
   scope "/api/v1", ScoresApiWeb do
     pipe_through :api
 
@@ -43,4 +45,36 @@ defmodule ScoresApiWeb.Router do
     options   "/games_scores",      GameController,   :options
 
   end
+
+  scope "/" do
+    forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :scores_api, swagger_file: "swagger.json"
+  end
+
+
+
+  def swagger_info do
+    %{
+      info: %{
+        version: "1.0",
+        title: "ScorezCount API",
+        host: "http://scorezcount.com:4000"
+      },
+      schemes: ["http"]
+    #   ,
+    #   securityDefinitions: %{
+    #   Bearer: %{
+    #     type: "apiKey",
+    #     name: "Authorization",
+    #     in: "header"
+    #   }
+    # }
+    }
+  end
+
+
+  # basePath: "/api",
+  #   info: %{..},
+  #   tags: [%{name: "Users", description: "Operations about Users"}]
+
+
 end
