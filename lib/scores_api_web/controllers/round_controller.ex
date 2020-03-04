@@ -18,7 +18,7 @@ defmodule ScoresApiWeb.RoundController do
      %{
        Round:
          swagger_schema do
-           title("Round")
+           title("Rounds")
            description("Game Round")
 
          properties do

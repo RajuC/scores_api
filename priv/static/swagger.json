@@ -65,7 +65,7 @@
         "high_pts_to_win",
         "title"
       ],
-      "title": "Game",
+      "title": "Games",
       "type": "object"
     },
     "GameResponse": {
@@ -249,7 +249,7 @@
         "round_num",
         "game_id"
       ],
-      "title": "Round",
+      "title": "Rounds",
       "type": "object"
     },
     "RoundResponse": {
@@ -376,7 +376,7 @@
         "email",
         "name"
       ],
-      "title": "User",
+      "title": "Users",
       "type": "object"
     },
     "UserResponse": {

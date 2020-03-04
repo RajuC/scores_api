@@ -15,7 +15,7 @@ defmodule ScoresApiWeb.GameController do
      %{
        Game:
          swagger_schema do
-           title("Game")
+           title("Games")
            description("Users Game")
 
          properties do

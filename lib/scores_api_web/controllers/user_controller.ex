@@ -14,7 +14,7 @@ defmodule ScoresApiWeb.UserController do
      %{
        User:
          swagger_schema do
-           title("User")
+           title("Users")
            description("A user of the ScoresApi")
 
          properties do
