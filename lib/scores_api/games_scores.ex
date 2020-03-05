@@ -119,17 +119,23 @@ defmodule ScoresApi.GamesScores do
 ## ===========================================================
   defp update_score_by_name([], t_s), do: t_s
   defp update_score_by_name([%{name: player, score: p_score} | rest_scores], t_s) do
-    prev_t_s = t_s |> Enum.find(fn u -> u.name == player end)
-    prev_score =
-      prev_t_s
-        |> Map.get(:score)
-    new_score =
-      case p_score do
-        "NA" -> prev_score;
-        _    -> p_score + prev_score
-      end
-     new_t_s = t_s |> List.delete(prev_t_s) |> Enum.concat([%{name: player, score: new_score}])
-     update_score_by_name(rest_scores, new_t_s)
+
+    [update_p_ts] = for %{name: p, score: s} <- t_s, player == p, do: %{name: p, score: s + p_score}
+    rest_p_ts  = for %{name: p} = p_ts <- t_s, player != p, do: p_ts
+    update_score_by_name(rest_scores, [update_p_ts| rest_p_ts])
+
+
+    # prev_t_s = t_s |> Enum.find(fn u -> u.name == player end)
+    # prev_score =
+    #   prev_t_s
+    #     |> Map.get(:score)
+    # new_score =
+    #   case p_score do
+    #     "NA" -> prev_score;
+    #     _    -> p_score + prev_score
+    #   end
+    #  new_t_s = t_s |> List.delete(prev_t_s) |> Enum.concat([%{name: player, score: new_score}])
+    #  update_score_by_name(rest_scores, new_t_s)
   end
 
 
